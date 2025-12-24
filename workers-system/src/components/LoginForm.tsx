@@ -34,32 +34,28 @@ export default function LoginForm() {
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-900 px-4 sm:px-6 lg:px-8">
-            <div className="w-full max-w-md space-y-8">
-                <div className="text-center">
-                    <div className="inline-flex items-center justify-center space-x-3 mb-6">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center">
-                            <span className="text-2xl font-bold text-white">TM</span>
-                        </div>
+        <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
+            <div className="w-full max-w-md">
+                {/* Logo and Title */}
+                <div className="text-center mb-8">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl mb-4">
+                        <span className="text-3xl font-bold text-white">TM</span>
                     </div>
-                    <h2 className="text-3xl font-bold tracking-tight text-white">
-                        THEE MARTS SPACE
-                    </h2>
-                    <p className="mt-2 text-sm text-gray-400">
-                        Workers Management System
-                    </p>
+                    <h1 className="text-3xl font-bold text-white mb-2">THEE MARTS SPACE</h1>
+                    <p className="text-gray-400">Workers Management System</p>
                 </div>
 
-                <div className="mt-8 bg-gray-800 rounded-xl shadow-2xl border border-gray-700 p-8">
-                    <h3 className="text-xl font-semibold text-white mb-6">Sign in to your account</h3>
+                {/* Login Card */}
+                <div className="bg-gray-800 rounded-xl shadow-2xl border border-gray-700 p-8">
+                    <h2 className="text-xl font-semibold text-white mb-6">Sign in to your account</h2>
 
                     {error && (
-                        <div className="mb-6 rounded-lg bg-red-900 border border-red-700 p-4">
+                        <div className="mb-6 p-4 bg-red-900/50 border border-red-700 rounded-lg">
                             <p className="text-sm text-red-200">{error}</p>
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
                             <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">
                                 Username
@@ -69,7 +65,8 @@ export default function LoginForm() {
                                 name="username"
                                 type="text"
                                 required
-                                className="block w-full rounded-lg border-0 bg-gray-700 px-4 py-3 text-white placeholder-gray-400 ring-1 ring-inset ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+                                autoComplete="username"
+                                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 placeholder="Enter username"
                             />
                         </div>
@@ -83,24 +80,24 @@ export default function LoginForm() {
                                 name="password"
                                 type="password"
                                 required
-                                className="block w-full rounded-lg border-0 bg-gray-700 px-4 py-3 text-white placeholder-gray-400 ring-1 ring-inset ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6"
+                                autoComplete="current-password"
+                                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 placeholder="Enter password"
                             />
                         </div>
 
-                        <div>
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="flex w-full justify-center rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-lg hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
-                            >
-                                {loading ? "Signing in..." : "Sign in"}
-                            </button>
-                        </div>
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {loading ? "Signing in..." : "Sign in"}
+                        </button>
                     </form>
                 </div>
 
-                <p className="text-center text-sm text-gray-500">
+                {/* Footer */}
+                <p className="text-center text-sm text-gray-500 mt-6">
                     © 2024 Thee Marts Space. All rights reserved.
                 </p>
             </div>
