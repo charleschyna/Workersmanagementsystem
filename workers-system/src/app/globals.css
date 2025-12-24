@@ -3,12 +3,14 @@
 @tailwind utilities;
 
 @layer base {
-  * {
-    @apply border-gray-200;
+
+  html,
+  body {
+    @apply bg-gray-900 text-gray-100 m-0 p-0;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 
-  body {
-    @apply bg-gray-900 text-gray-100;
-    font-feature-settings: "rlig" 1, "calt" 1;
+  * {
+    @apply border-gray-700;
   }
 }
