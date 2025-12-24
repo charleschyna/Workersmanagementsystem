@@ -269,3 +269,43 @@ export async function leaveAccount(accountId: string) {
         return { success: false };
     }
 }
+
+export async function updateManagerCredentials(formData: FormData) {
+    const session = await getServerSession(authOptions);
+    // @ts-ignore
+    if (session?.user?.role !== "MANAGER") {
+        throw new Error("Unauthorized");
+    }
+
+    const currentPassword = formData.get("currentPassword") as string;
+    const newUsername = formData.get("newUsername") as string;
+    const newPassword = formData.get("newPassword") as string;
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { username: session.user.name || "" },
+        });
+
+        if (!user) {
+            return { success: false, error: "User not found" };
+        }
+
+        if (user.password !== currentPassword) {
+            return { success: false, error: "Current password is incorrect" };
+        }
+
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                username: newUsername || user.username,
+                password: newPassword || user.password,
+            },
+        });
+
+        revalidatePath("/manager/settings");
+        return { success: true, newUsername: newUsername || user.username };
+    } catch (error) {
+        console.error("Failed to update credentials:", error);
+        return { success: false, error: "Failed to update credentials" };
+    }
+}
