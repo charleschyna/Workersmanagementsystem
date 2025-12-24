@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2>
+            <i class="bi bi-person-lines-fill"></i> History: {{ employee.username }}
+        </h2>
+        <p class="text-muted">{{ employee.first_name }} {{ employee.last_name }}</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'manager_dashboard' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-auto">
+                <label for="date" class="form-label fw-bold">Select Date:</label>
+                <input type="date" id="date" name="date" class="form-control" value="{{ selected_date|date:'Y-m-d' }}"
+                    max="{{ today|date:'Y-m-d' }}">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">View History</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card mb-3 border-info">
+            <div class="card-header bg-transparent border-info text-info fw-bold">Total Hours</div>
+            <div class="card-body">
+                <h3 class="card-title text-info">{{ total_hours }} hrs</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-3 border-success">
+            <div class="card-header bg-transparent border-success text-success fw-bold">Total Pay (Est.)</div>
+            <div class="card-body">
+                <h3 class="card-title text-success">${{ total_pay }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">Tasks for {{ selected_date|date:"F j, Y" }}</h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Platform</th>
+                    <th>Account</th>
+                    <th>Task ID</th>
+                    <th>Hours</th>
+                    <th>Status</th>
+                    <th>Proof</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for claim in claims %}
+                <tr>
+                    <td><span class="badge bg-info text-dark">{{ claim.platform }}</span></td>
+                    <td>{{ claim.account_name }}</td>
+                    <td><code>{{ claim.task_external_id }}</code></td>
+                    <td>{{ claim.time_spent_hours }}</td>
+                    <td>
+                        {% if claim.status == 'Approved' %}
+                        <span class="badge bg-success">Approved</span>
+                        {% elif claim.status == 'Rejected' %}
+                        <span class="badge bg-danger">Rejected</span>
+                        {% else %}
+                        <span class="badge bg-warning text-dark">Pending</span>
+                        {% endif %}
+
+                        {% if claim.is_paid %}
+                        <span class="badge bg-primary">Paid</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if claim.screenshot %}
+                        <a href="{{ claim.screenshot.url }}" target="_blank">
+                            <img src="{{ claim.screenshot.url }}" alt="Proof" class="img-thumbnail"
+                                style="height: 40px;">
+                        </a>
+                        {% else %}
+                        <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ claim.submitted_at|date:"H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-4 text-muted">
+                        No tasks found for this date.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

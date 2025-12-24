@@ -1,0 +1,356 @@
+/* Global Styles - Friendly Dark Mode */
+:root {
+    /* Palette: Cool Gray (Softer than Slate) */
+    --bg-body: #111827;
+    /* Gray 900 */
+    --bg-surface: #1f2937;
+    /* Gray 800 */
+    --bg-surface-hover: #374151;
+    /* Gray 700 */
+
+    --text-primary: #f9fafb;
+    /* Gray 50 */
+    --text-secondary: #d1d5db;
+    /* Gray 300 - Brighter for better contrast */
+    --text-muted: #9ca3af;
+    /* Gray 400 */
+
+    --border-color: #374151;
+    /* Gray 700 */
+
+    /* Accents: Softer, more pastel gradients */
+    --primary-gradient: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+    /* Soft Blue to Soft Violet */
+    --primary-hover: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+
+    --accent-color: #60a5fa;
+    --success-color: #34d399;
+    --danger-color: #f87171;
+    --warning-color: #fbbf24;
+
+    --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    --glass-bg: rgba(31, 41, 55, 0.85);
+    /* More opaque for better readability */
+    --glass-border: rgba(255, 255, 255, 0.08);
+
+    --radius-card: 1.5rem;
+    --radius-btn: 0.75rem;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-body);
+    /* Premium Radial Gradient Background */
+    background-image:
+        radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.08), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 25%);
+    color: var(--text-primary);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+}
+
+/* Force Dark Inputs globally */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="date"],
+input[type="datetime-local"],
+textarea,
+select {
+    background-color: #111827 !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: var(--radius-btn);
+    padding: 0.75rem 1rem;
+    width: 100%;
+    /* Ensure they take full width like form-control */
+    display: block;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+}
+
+a {
+    text-decoration: none;
+    color: var(--accent-color);
+    transition: all 0.2s;
+}
+
+a:hover {
+    color: #93c5fd;
+    /* Blue 300 */
+}
+
+/* File Input Styling */
+input[type="file"] {
+    background-color: #111827;
+    color: var(--text-secondary);
+    padding: 0.5rem;
+}
+
+input[type="file"]::file-selector-button {
+    background-color: var(--bg-surface-hover);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    margin-right: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background-color: #3b82f6;
+    /* Blue 500 - Darker than accent */
+    color: white;
+    border-color: #3b82f6;
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--glass-bg) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 1.25rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-brand {
+    color: var(--text-primary) !important;
+    font-weight: 800;
+    font-size: 1.5rem;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.navbar-nav {
+    gap: 0.5rem;
+    /* Add spacing between buttons */
+}
+
+.nav-link {
+    color: var(--text-secondary) !important;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 2rem;
+    /* Pill shape */
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    /* Prevent layout shift on hover */
+}
+
+.nav-link:hover,
+.nav-link:focus {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+    /* Subtle glow */
+    transform: translateY(-1px);
+}
+
+/* Special style for Logout to make it look like a button */
+button.nav-link {
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+button.nav-link:hover {
+    background-color: rgba(248, 113, 113, 0.2);
+    /* Red tint for logout */
+    border-color: rgba(248, 113, 113, 0.4);
+    box-shadow: 0 0 10px rgba(248, 113, 113, 0.3);
+}
+
+/* Cards */
+.card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-card);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: rgba(0, 0, 0, 0.2);
+    /* Darker header for contrast */
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.5rem 2rem;
+}
+
+.card-header h4,
+.card-header h5 {
+    margin-bottom: 0;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+/* Buttons */
+.btn {
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-btn);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    color: #111827;
+    /* Dark text on bright gradient for readability */
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(96, 165, 250, 0.4);
+}
+
+/* Tables - CRITICAL FIXES */
+.table {
+    --bs-table-bg: transparent;
+    /* Override Bootstrap */
+    --bs-table-color: var(--text-secondary);
+    --bs-table-border-color: var(--border-color);
+    color: var(--text-secondary);
+    margin-bottom: 0;
+}
+
+.table th {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    padding: 1.25rem 1rem;
+}
+
+.table td {
+    background-color: transparent;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+    color: var(--text-primary);
+    /* Brighter text */
+    padding: 1.25rem 1rem;
+}
+
+.table-hover tbody tr:hover td {
+    background-color: var(--bg-surface-hover);
+    color: white;
+}
+
+/* Forms */
+.form-control,
+.form-select {
+    background-color: #111827;
+    /* Darker input bg */
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: var(--radius-btn);
+    padding: 0.875rem 1rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: #111827;
+    border-color: var(--accent-color);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+.form-label {
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Badges */
+.badge {
+    padding: 0.5em 1em;
+    font-weight: 600;
+    border-radius: 2rem;
+    /* Pill shape */
+    letter-spacing: 0.025em;
+}
+
+.bg-success {
+    background-color: rgba(52, 211, 153, 0.15) !important;
+    color: #34d399 !important;
+    border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+.bg-warning {
+    background-color: rgba(251, 191, 36, 0.15) !important;
+    color: #fbbf24 !important;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.bg-info {
+    background-color: rgba(96, 165, 250, 0.15) !important;
+    color: #60a5fa !important;
+    border: 1px solid rgba(96, 165, 250, 0.3);
+}
+
+/* Utilities */
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.shadow {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Dropdown */
+.dropdown-menu {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    padding: 0.5rem;
+}
+
+.dropdown-item {
+    color: var(--text-secondary);
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+}
+
+.dropdown-item:hover {
+    background-color: var(--bg-surface-hover);
+    color: white;
+}
+
+/* List Group */
+.list-group-item {
+    background-color: transparent;
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}

@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">Manager Dashboard</h4>
+        <div>
+            <div class="btn-group me-2">
+                <button type="button" class="btn btn-outline-light btn-sm dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <i class="bi bi-clock-history"></i> View History
+                </button>
+                <ul class="dropdown-menu">
+                    {% for emp in all_employees %}
+                    <li><a class="dropdown-item" href="{% url 'employee_history' emp.id %}">{{ emp.username }}</a></li>
+                    {% empty %}
+                    <li><span class="dropdown-item text-muted">No employees found</span></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <a href="{% url 'add_employee' %}" class="btn btn-primary btn-sm me-2">
+                <i class="bi bi-person-plus"></i> Add Employee
+            </a>
+            <a href="{% url 'assign_account' %}" class="btn btn-info btn-sm me-2 text-white">
+                <i class="bi bi-pc-display"></i> Assign Account
+            </a>
+            <span class="badge bg-warning text-dark">Pending Review</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Notifications Section -->
+        {% if paused_accounts or left_accounts %}
+        <div class="mb-4">
+            <h5 class="text-muted mb-3">Notifications (DEBUG: FIX APPLIED)</h5>
+            <div class="row">
+                {% for account in paused_accounts %}
+                <div class="col-md-6 mb-2">
+                    <div class="alert alert-warning d-flex align-items-center" role="alert">
+                        <i class="bi bi-pause-circle-fill me-2"></i>
+                        <div>
+                            <strong>{{ account.employee.username }}</strong> has PAUSED the account <strong>{{ account.account_name }}</strong> (ID: {{ account.id }})
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% for account in left_accounts %}
+                <div class="col-md-6 mb-2">
+                    <div class="alert alert-danger d-flex align-items-center" role="alert">
+                        <i class="bi bi-exclamation-circle-fill me-2"></i>
+                        <div>
+                            <strong>{{ account.employee.username }}</strong> has LEFT the account <strong>{{ account.account_name }}</strong>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if grouped_claims %}
+        {% for employee, claims in grouped_claims.items %}
+        <div class="card mb-4 border-primary">
+            <div class="card-header bg-light">
+                <h5 class="mb-0 text-primary">
+                    <a href="{% url 'employee_history' employee.id %}" class="text-decoration-none">
+                        <i class="bi bi-person-circle"></i> {{ employee.username }}
+                    </a>
+                    <span class="badge bg-secondary float-end">{{ claims|length }} Pending</span>
+                </h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Platform</th>
+                            <th>Account</th>
+                            <th>Task ID</th>
+                            <th>Time (hrs)</th>
+                            <th>Proof</th>
+                            <th>Submitted</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for claim in claims %}
+                        <tr>
+                            <td><span class="badge bg-info text-dark">{{ claim.platform }}</span></td>
+                            <td>{{ claim.account_name }}</td>
+                            <td><code>{{ claim.task_external_id }}</code></td>
+                            <td>{{ claim.time_spent_hours }}</td>
+                            <td>
+                                {% if claim.screenshot %}
+                                <a href="{{ claim.screenshot.url }}" target="_blank">
+                                    <img src="{{ claim.screenshot.url }}" alt="Proof" class="img-thumbnail"
+                                        style="height: 50px;">
+                                </a>
+                                {% else %}
+                                <span class="text-muted">No Image</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ claim.submitted_at|date:"M d, H:i" }}</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'approve_claim' claim.id %}"
+                                        class="btn btn-success btn-sm">Approve</a>
+                                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#rejectModal{{ claim.id }}">
+                                        Reject
+                                    </button>
+                                </div>
+
+                                <!-- Reject Modal -->
+                                <div class="modal fade" id="rejectModal{{ claim.id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form action="{% url 'reject_claim' claim.id %}" method="post">
+                                                {% csrf_token %}
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Reject Claim</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Reason for Rejection</label>
+                                                        <textarea name="reason" class="form-control" rows="3"
+                                                            required></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-danger">Reject Claim</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="text-center py-5">
+            <p class="lead text-muted">No pending claims to review.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+</div>
+
+<div class="card shadow mt-4">
+    <div class="card-header bg-dark text-white">
+        <h4 class="mb-0">Assigned Accounts Overview</h4>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Employee</th>
+                        <th>Account Name</th>
+                        <th>Browser</th>
+                        <th>Status</th>
+                        <th>Assigned At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for account in all_accounts %}
+                    <tr>
+                        <td>{{ account.employee.username }}</td>
+                        <td>{{ account.account_name }}</td>
+                        <td>{{ account.browser_type }}</td>
+                        <td>
+                            {% if account.status == 'Accepted' %}
+                            <span class="badge bg-success">Accepted</span>
+                            {% elif account.status == 'Paused' %}
+                            <span class="badge bg-warning text-dark">Paused</span>
+                            {% elif account.status == 'Left' %}
+                            <span class="badge bg-danger">Left</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Assigned</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ account.assigned_at|date:"M d, Y" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">No accounts assigned yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
