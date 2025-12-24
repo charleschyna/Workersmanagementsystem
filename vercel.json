@@ -1,7 +1,0 @@
-{
-    "buildCommand": "cd workers-system && npm run build",
-    "devCommand": "cd workers-system && npm run dev",
-    "installCommand": "cd workers-system && npm install",
-    "framework": "nextjs",
-    "outputDirectory": "workers-system/.next"
-}
