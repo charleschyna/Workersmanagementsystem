@@ -52,3 +52,4 @@ npm run dev
 ## Deployment
 
 This app is ready to deploy on Vercel. Make sure to set the environment variables in your Vercel project settings.
+# Trigger rebuild
