@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  role      Role     @default(EMPLOYEE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  claims           TaskClaim[]
+  assignedAccounts WorkAccount[]
+}
+
+enum Role {
+  MANAGER
+  EMPLOYEE
+}
+
+model TaskClaim {
+  id             String   @id @default(cuid())
+  employeeId     String
+  employee       User     @relation(fields: [employeeId], references: [id])
+  platform       String
+  accountName    String
+  taskExternalId String
+  screenshot     String
+  timeSpentHours Decimal
+  status         ClaimStatus @default(Pending)
+  isPaid         Boolean  @default(false)
+  submittedAt    DateTime @default(now())
+  managerNotes   String?
+
+  @@unique([platform, taskExternalId])
+}
+
+enum ClaimStatus {
+  Pending
+  Approved
+  Rejected
+}
+
+model WorkAccount {
+  id               String   @id @default(cuid())
+  employeeId       String?
+  employee         User?    @relation(fields: [employeeId], references: [id])
+  accountName      String
+  loginDetails     String
+  browserType      String
+  status           AccountStatus @default(Assigned)
+  recentlyUnpaused Boolean  @default(false)
+  assignedAt       DateTime @default(now())
+}
+
+enum AccountStatus {
+  Assigned
+  Accepted
+  Paused
+  Left
+}
