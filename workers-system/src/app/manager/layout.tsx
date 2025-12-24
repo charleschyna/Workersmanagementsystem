@@ -46,6 +46,12 @@ export default async function ManagerLayout({
                                 >
                                     Payroll
                                 </Link>
+                                <Link
+                                    href="/manager/settings"
+                                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700"
+                                >
+                                    Settings
+                                </Link>
                             </div>
                             <div className="flex items-center space-x-3">
                                 <span className="text-sm text-gray-400">
