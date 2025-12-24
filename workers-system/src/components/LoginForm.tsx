@@ -34,30 +34,30 @@ export default function LoginForm() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
-            <div className="w-full max-w-md">
+        <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
+            <div className="w-full max-w-xl">
                 {/* Logo and Title */}
-                <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl mb-4">
-                        <span className="text-3xl font-bold text-white">TM</span>
+                <div className="text-center mb-12">
+                    <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-500 to-blue-700 rounded-3xl mb-6 shadow-2xl">
+                        <span className="text-5xl font-bold text-white">TM</span>
                     </div>
-                    <h1 className="text-3xl font-bold text-white mb-2">THEE MARTS SPACE</h1>
-                    <p className="text-gray-400">Workers Management System</p>
+                    <h1 className="text-5xl font-bold text-white mb-3">THEE MARTS SPACE</h1>
+                    <p className="text-xl text-gray-400">Workers Management System</p>
                 </div>
 
                 {/* Login Card */}
-                <div className="bg-gray-800 rounded-xl shadow-2xl border border-gray-700 p-8">
-                    <h2 className="text-xl font-semibold text-white mb-6">Sign in to your account</h2>
+                <div className="bg-gray-800 rounded-2xl shadow-2xl border border-gray-700 p-10">
+                    <h2 className="text-2xl font-semibold text-white mb-8">Sign in to your account</h2>
 
                     {error && (
-                        <div className="mb-6 p-4 bg-red-900/50 border border-red-700 rounded-lg">
-                            <p className="text-sm text-red-200">{error}</p>
+                        <div className="mb-8 p-5 bg-red-900/50 border border-red-700 rounded-xl">
+                            <p className="text-base text-red-200">{error}</p>
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form onSubmit={handleSubmit} className="space-y-7">
                         <div>
-                            <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">
+                            <label htmlFor="username" className="block text-base font-medium text-gray-300 mb-3">
                                 Username
                             </label>
                             <input
@@ -66,13 +66,13 @@ export default function LoginForm() {
                                 type="text"
                                 required
                                 autoComplete="username"
-                                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-5 py-4 text-lg bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                 placeholder="Enter username"
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+                            <label htmlFor="password" className="block text-base font-medium text-gray-300 mb-3">
                                 Password
                             </label>
                             <input
@@ -81,7 +81,7 @@ export default function LoginForm() {
                                 type="password"
                                 required
                                 autoComplete="current-password"
-                                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-5 py-4 text-lg bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                 placeholder="Enter password"
                             />
                         </div>
@@ -89,7 +89,7 @@ export default function LoginForm() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full py-4 px-6 text-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02]"
                         >
                             {loading ? "Signing in..." : "Sign in"}
                         </button>
@@ -97,7 +97,7 @@ export default function LoginForm() {
                 </div>
 
                 {/* Footer */}
-                <p className="text-center text-sm text-gray-500 mt-6">
+                <p className="text-center text-base text-gray-500 mt-8">
                     © 2024 Thee Marts Space. All rights reserved.
                 </p>
             </div>
