@@ -17,7 +17,22 @@ export async function submitClaim(formData: FormData) {
     const taskExternalId = formData.get("taskExternalId") as string;
     const timeSpentHours = parseFloat(formData.get("timeSpentHours") as string);
     const screenshotFile = formData.get("screenshot") as File;
-    const screenshotPath = screenshotFile?.name || "no-screenshot.png";
+    
+    let screenshotPath = "no-screenshot.png";
+    
+    // Handle file upload if provided
+    if (screenshotFile && screenshotFile.size > 0) {
+        try {
+            // Convert file to base64 for storage
+            const bytes = await screenshotFile.arrayBuffer();
+            const buffer = Buffer.from(bytes);
+            const base64 = buffer.toString('base64');
+            screenshotPath = `data:${screenshotFile.type};base64,${base64}`;
+        } catch (fileError) {
+            console.error("Error processing file:", fileError);
+            // Continue with default if file processing fails
+        }
+    }
 
     // Fetch the user from database by username
     const user = await prisma.user.findUnique({
