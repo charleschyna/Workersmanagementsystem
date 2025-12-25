@@ -155,7 +155,7 @@ export async function addEmployee(formData: FormData) {
     }
 }
 
-export async function assignAccount(formData: FormData) {
+export async function createAccount(formData: FormData) {
     const session = await getServerSession(authOptions);
     // @ts-ignore
     if (session?.user?.role !== "MANAGER") {
@@ -165,7 +165,6 @@ export async function assignAccount(formData: FormData) {
     const accountName = formData.get("accountName") as string;
     const loginDetails = formData.get("loginDetails") as string;
     const browserType = formData.get("browserType") as string;
-    const employeeId = formData.get("employeeId") as string;
 
     try {
         await prisma.workAccount.create({
@@ -174,14 +173,91 @@ export async function assignAccount(formData: FormData) {
                 loginDetails,
                 browserType,
                 status: "Assigned",
+                employeeId: null,
+            },
+        });
+        revalidatePath("/manager/dashboard");
+        revalidatePath("/manager/accounts");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to create account:", error);
+        return { success: false, error: "Failed to create account" };
+    }
+}
+
+export async function assignAccount(formData: FormData) {
+    const session = await getServerSession(authOptions);
+    // @ts-ignore
+    if (session?.user?.role !== "MANAGER") {
+        throw new Error("Unauthorized");
+    }
+
+    const accountId = formData.get("accountId") as string;
+    const employeeId = formData.get("employeeId") as string;
+
+    try {
+        await prisma.workAccount.update({
+            where: { id: accountId },
+            data: {
+                status: "Assigned",
                 employeeId: employeeId || null,
             },
         });
         revalidatePath("/manager/dashboard");
+        revalidatePath("/manager/assign-account");
         return { success: true };
     } catch (error) {
         console.error("Failed to assign account:", error);
         return { success: false, error: "Failed to assign account" };
+    }
+}
+
+export async function reassignAccount(formData: FormData) {
+    const session = await getServerSession(authOptions);
+    // @ts-ignore
+    if (session?.user?.role !== "MANAGER") {
+        throw new Error("Unauthorized");
+    }
+
+    const accountId = formData.get("accountId") as string;
+    const employeeId = formData.get("employeeId") as string;
+
+    try {
+        await prisma.workAccount.update({
+            where: { id: accountId },
+            data: {
+                status: employeeId ? "Assigned" : "Assigned",
+                employeeId: employeeId || null,
+            },
+        });
+        revalidatePath("/manager/dashboard");
+        revalidatePath("/manager/accounts");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to reassign account:", error);
+        return { success: false, error: "Failed to reassign account" };
+    }
+}
+
+export async function deleteAccount(formData: FormData) {
+    const session = await getServerSession(authOptions);
+    // @ts-ignore
+    if (session?.user?.role !== "MANAGER") {
+        throw new Error("Unauthorized");
+    }
+
+    const accountId = formData.get("accountId") as string;
+
+    try {
+        await prisma.workAccount.delete({
+            where: { id: accountId },
+        });
+        revalidatePath("/manager/dashboard");
+        revalidatePath("/manager/accounts");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to delete account:", error);
+        return { success: false, error: "Failed to delete account" };
     }
 }
 
