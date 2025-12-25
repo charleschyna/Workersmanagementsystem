@@ -261,6 +261,32 @@ export async function deleteAccount(formData: FormData) {
     }
 }
 
+export async function unassignAllAccounts() {
+    const session = await getServerSession(authOptions);
+    // @ts-ignore
+    if (session?.user?.role !== "MANAGER") {
+        throw new Error("Unauthorized");
+    }
+
+    try {
+        await prisma.workAccount.updateMany({
+            where: {
+                employeeId: { not: null }
+            },
+            data: {
+                employeeId: null,
+                status: "Assigned"
+            },
+        });
+        revalidatePath("/manager/dashboard");
+        revalidatePath("/manager/accounts");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to unassign all accounts:", error);
+        return { success: false, error: "Failed to unassign all accounts" };
+    }
+}
+
 export async function acceptAccount(accountId: string) {
     const session = await getServerSession(authOptions);
     if (!session?.user) {

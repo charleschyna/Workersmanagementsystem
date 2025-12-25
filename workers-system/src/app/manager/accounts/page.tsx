@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createAccount } from "@/app/actions";
 import { redirect } from "next/navigation";
 import AccountRow from "@/components/AccountRow";
+import UnassignAllButton from "@/components/UnassignAllButton";
 
 export default async function ManageAccountsPage() {
     const [accounts, employees] = await Promise.all([
@@ -22,15 +23,20 @@ export default async function ManageAccountsPage() {
         redirect("/manager/accounts");
     }
 
+    const assignedCount = accounts.filter(a => a.employeeId !== null).length;
+
     return (
         <div className="space-y-6">
             <div className="rounded-lg bg-gray-800 p-6 shadow-lg">
                 <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
                     <h2 className="text-2xl font-bold text-white">Manage Accounts</h2>
-                    <Link href="/manager/dashboard" className="inline-flex items-center rounded-md bg-gray-600 px-3 py-2 text-sm font-medium text-white hover:bg-gray-700">
-                        <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                        Back to Dashboard
-                    </Link>
+                    <div className="flex flex-wrap gap-2">
+                        <UnassignAllButton assignedCount={assignedCount} />
+                        <Link href="/manager/dashboard" className="inline-flex items-center rounded-md bg-gray-600 px-3 py-2 text-sm font-medium text-white hover:bg-gray-700">
+                            <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                            Back to Dashboard
+                        </Link>
+                    </div>
                 </div>
             </div>
 
