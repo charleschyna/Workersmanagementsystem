@@ -16,16 +16,25 @@ export default async function ManagerDashboardPage() {
             orderBy: { username: "asc" },
         }),
         prisma.workAccount.findMany({
+            where: {
+                employeeId: { not: null }
+            },
             include: { employee: true },
             orderBy: { assignedAt: "desc" },
         }),
         prisma.workAccount.findMany({
-            where: { status: "Paused" },
+            where: { 
+                status: "Paused",
+                employeeId: { not: null }
+            },
             include: { employee: true },
             orderBy: { assignedAt: "desc" },
         }),
         prisma.workAccount.findMany({
-            where: { status: "Left" },
+            where: { 
+                status: "Left",
+                employeeId: { not: null }
+            },
             include: { employee: true },
             orderBy: { assignedAt: "desc" },
         }),
