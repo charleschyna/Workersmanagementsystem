@@ -54,9 +54,9 @@ export default async function AccountEarningsPage() {
         });
         acc[accountName].totalEarned += earned;
         acc[accountName].sessionsCount += 1;
-        if (account.employee) {
-            acc[accountName].uniqueEmployees.add(account.employee.username);
-        }
+        // Count both known employees and unknown ones as separate workers
+        const employeeName = account.employee?.username || `Unknown-${account.id}`;
+        acc[accountName].uniqueEmployees.add(employeeName);
         
         return acc;
     }, {});
