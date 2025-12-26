@@ -23,6 +23,12 @@ export default async function ManageEmployeesPage() {
         redirect("/manager/employees");
     }
 
+    async function deleteEmployeeAction(formData: FormData) {
+        "use server";
+        await deleteEmployee(formData);
+        redirect("/manager/employees");
+    }
+
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -137,7 +143,7 @@ export default async function ManageEmployeesPage() {
                                             {new Date(employee.createdAt).toLocaleDateString()}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                            <form action={deleteEmployee}>
+                                            <form action={deleteEmployeeAction}>
                                                 <input type="hidden" name="employeeId" value={employee.id} />
                                                 <button
                                                     type="submit"
