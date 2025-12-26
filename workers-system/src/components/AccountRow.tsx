@@ -123,11 +123,7 @@ export default function AccountRow({ account, employees }: { account: Account; e
                     >
                         <option value="IX Browser">IX Browser</option>
                         <option value="GoLogin">GoLogin</option>
-                        <option value="AdsPower">AdsPower</option>
-                        <option value="Dolphin Anty">Dolphin Anty</option>
-                        <option value="Incogniton">Incogniton</option>
-                        <option value="Chrome">Chrome</option>
-                        <option value="Firefox">Firefox</option>
+                        <option value="More Login">More Login</option>
                     </select>
                 </td>
                 <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-300">

@@ -101,11 +101,7 @@ export default async function ManageAccountsPage() {
                         >
                             <option value="IX Browser">IX Browser</option>
                             <option value="GoLogin">GoLogin</option>
-                            <option value="AdsPower">AdsPower</option>
-                            <option value="Dolphin Anty">Dolphin Anty</option>
-                            <option value="Incogniton">Incogniton</option>
-                            <option value="Chrome">Chrome</option>
-                            <option value="Firefox">Firefox</option>
+                            <option value="More Login">More Login</option>
                         </select>
                     </div>
 
