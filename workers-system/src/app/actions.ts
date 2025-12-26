@@ -58,7 +58,7 @@ export async function submitClaim(formData: FormData) {
     } catch (e: any) {
         console.error("Submit claim error:", e);
         if (e.code === 'P2002') {
-            return { success: false, error: "This task ID already exists for this platform." };
+            return { success: false, error: "This task ID has already been submitted. Each task ID can only be used once." };
         }
         return { success: false, error: e.message || "Failed to submit claim." };
     }

@@ -30,15 +30,13 @@ model TaskClaim {
   employee       User     @relation(fields: [employeeId], references: [id])
   platform       String
   accountName    String
-  taskExternalId String
+  taskExternalId String   @unique
   screenshot     String
   timeSpentHours Decimal
   status         ClaimStatus @default(Pending)
   isPaid         Boolean  @default(false)
   submittedAt    DateTime @default(now())
   managerNotes   String?
-
-  @@unique([platform, taskExternalId])
 }
 
 enum ClaimStatus {
