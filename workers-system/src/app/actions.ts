@@ -248,13 +248,39 @@ export async function reassignAccount(formData: FormData) {
     const employeeId = formData.get("employeeId") as string;
 
     try {
-        await prisma.workAccount.update({
-            where: { id: accountId },
-            data: {
-                status: employeeId ? "Assigned" : "Assigned",
-                employeeId: employeeId || null,
-            },
+        // Get the existing account
+        const existingAccount = await prisma.workAccount.findUnique({
+            where: { id: accountId }
         });
+
+        if (!existingAccount) {
+            return { success: false, error: "Account not found" };
+        }
+
+        // If the account has already been worked on (has finalEarnings), create a new record
+        // to preserve the previous work session history
+        if (existingAccount.finalEarnings !== null) {
+            // Create new account record with the same details
+            await prisma.workAccount.create({
+                data: {
+                    accountName: existingAccount.accountName,
+                    loginDetails: existingAccount.loginDetails,
+                    browserType: existingAccount.browserType,
+                    status: "Assigned",
+                    employeeId: employeeId || null,
+                }
+            });
+        } else {
+            // If account hasn't been worked on yet, just update it normally
+            await prisma.workAccount.update({
+                where: { id: accountId },
+                data: {
+                    status: employeeId ? "Assigned" : "Assigned",
+                    employeeId: employeeId || null,
+                },
+            });
+        }
+        
         revalidatePath("/manager/dashboard");
         revalidatePath("/manager/accounts");
         return { success: true };

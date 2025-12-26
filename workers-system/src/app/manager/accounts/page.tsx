@@ -8,6 +8,9 @@ import UnassignAllButton from "@/components/UnassignAllButton";
 export default async function ManageAccountsPage() {
     const [accounts, employees] = await Promise.all([
         prisma.workAccount.findMany({
+            where: {
+                status: { not: "Left" } // Only show active accounts, not completed ones
+            },
             include: { employee: true },
             orderBy: { assignedAt: "desc" },
         }),
