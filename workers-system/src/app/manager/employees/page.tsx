@@ -4,7 +4,6 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { deleteEmployee, createEmployee } from "@/app/actions";
-import bcrypt from "bcryptjs";
 
 export default async function ManageEmployeesPage() {
     const session = await getServerSession(authOptions);
@@ -20,23 +19,7 @@ export default async function ManageEmployeesPage() {
 
     async function createEmployeeAction(formData: FormData) {
         "use server";
-        const username = formData.get("username") as string;
-        const password = formData.get("password") as string;
-
-        if (!username || !password) {
-            return;
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        await prisma.user.create({
-            data: {
-                username,
-                password: hashedPassword,
-                role: "EMPLOYEE",
-            },
-        });
-
+        await createEmployee(formData);
         redirect("/manager/employees");
     }
 
