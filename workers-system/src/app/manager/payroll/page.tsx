@@ -2,7 +2,6 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { markAccountAsPaid } from "@/app/actions";
 import Link from "next/link";
 import EarningsProofViewer from "@/components/EarningsProofViewer";
 
@@ -58,12 +57,6 @@ export default async function PayrollPage() {
         return acc;
     }, {});
 
-    async function markPaidAction(formData: FormData) {
-        "use server";
-        await markAccountAsPaid(formData);
-        redirect("/manager/payroll");
-    }
-
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -78,7 +71,9 @@ export default async function PayrollPage() {
 
             <div className="bg-blue-900 border border-blue-700 p-4 rounded-lg">
                 <p className="text-sm text-blue-200">
-                    <strong>New Payment System:</strong> Payments are now calculated based on account earnings difference (Final Earnings - Initial Earnings). Individual task submissions are tracked separately for activity monitoring.
+                    <strong>Payment Schedule:</strong> Payments are processed every Wednesday. This page shows all pending payroll records for review. Payments are calculated based on account earnings difference (Final Earnings - Initial Earnings).
+                </p>
+            </div>
                 </p>
             </div>
 
@@ -146,16 +141,6 @@ export default async function PayrollPage() {
                                         </div>
                                     ))}
                                 </div>
-
-                                <form action={markPaidAction} className="flex justify-end">
-                                    <input type="hidden" name="employeeId" value={employee.id} />
-                                    <button
-                                        type="submit"
-                                        className="rounded-md bg-green-600 px-6 py-3 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-                                    >
-                                        Mark All as Paid - ${totalEarned.toFixed(2)}
-                                    </button>
-                                </form>
                             </div>
                         </div>
                     ))}
