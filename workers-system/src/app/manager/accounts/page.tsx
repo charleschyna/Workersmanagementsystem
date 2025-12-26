@@ -46,7 +46,7 @@ export default async function ManageAccountsPage() {
             {/* Create New Account Form */}
             <div className="rounded-lg bg-gray-800 p-6 shadow-lg border border-gray-700">
                 <h3 className="text-lg font-bold text-white mb-4">Create New Account</h3>
-                <form action={createAccountAction} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <form action={createAccountAction} className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div>
                         <label htmlFor="accountName" className="block text-xs font-medium text-gray-300 mb-1">
                             Account Name *
@@ -56,21 +56,35 @@ export default async function ManageAccountsPage() {
                             name="accountName"
                             id="accountName"
                             required
-                            placeholder="e.g., john.doe@example.com"
+                            placeholder="e.g., John Doe"
                             className="block w-full rounded-md border-gray-600 bg-gray-700 text-white text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="loginDetails" className="block text-xs font-medium text-gray-300 mb-1">
-                            Login Details *
+                        <label htmlFor="email" className="block text-xs font-medium text-gray-300 mb-1">
+                            Email *
+                        </label>
+                        <input
+                            type="email"
+                            name="email"
+                            id="email"
+                            required
+                            placeholder="email@example.com"
+                            className="block w-full rounded-md border-gray-600 bg-gray-700 text-white text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
+                        />
+                    </div>
+
+                    <div>
+                        <label htmlFor="password" className="block text-xs font-medium text-gray-300 mb-1">
+                            Password *
                         </label>
                         <input
                             type="text"
-                            name="loginDetails"
-                            id="loginDetails"
+                            name="password"
+                            id="password"
                             required
-                            placeholder="Password or login info"
+                            placeholder="Account password"
                             className="block w-full rounded-md border-gray-600 bg-gray-700 text-white text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
                         />
                     </div>
@@ -114,7 +128,8 @@ export default async function ManageAccountsPage() {
                         <thead className="bg-gray-900">
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">Account Name</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">Login Details</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">Email</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">Password</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">Browser</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">Assigned To</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">Status</th>
@@ -124,7 +139,7 @@ export default async function ManageAccountsPage() {
                         <tbody className="divide-y divide-gray-700 bg-gray-800">
                             {accounts.length === 0 ? (
                                 <tr>
-                                    <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
+                                    <td colSpan={7} className="px-6 py-8 text-center text-gray-400">
                                         No accounts created yet. Create your first account above.
                                     </td>
                                 </tr>

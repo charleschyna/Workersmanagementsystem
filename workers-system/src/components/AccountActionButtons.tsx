@@ -9,7 +9,8 @@ type Account = {
     id: string;
     status: string;
     accountName: string;
-    loginDetails: string;
+    email: string;
+    password: string;
     browserType: string;
     initialEarnings: any;
 };
@@ -27,7 +28,8 @@ export default function AccountActionButtons({ account }: { account: Account }) 
     const accountData = {
         id: account.id,
         accountName: account.accountName,
-        loginDetails: account.loginDetails,
+        email: account.email,
+        password: account.password,
         browserType: account.browserType,
         initialEarnings: account.initialEarnings?.toString() || null
     };

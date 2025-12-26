@@ -50,7 +50,8 @@ model WorkAccount {
   employeeId       String?
   employee         User?    @relation(fields: [employeeId], references: [id])
   accountName      String
-  loginDetails     String
+  email            String
+  password         String
   browserType      String
   status           AccountStatus @default(Assigned)
   recentlyUnpaused Boolean  @default(false)

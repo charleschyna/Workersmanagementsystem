@@ -3,7 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { deleteEmployee, createEmployee } from "@/app/actions";
+import { createEmployee } from "@/app/actions";
+import DeleteEmployeeButton from "@/components/DeleteEmployeeButton";
 
 export default async function ManageEmployeesPage() {
     const session = await getServerSession(authOptions);
@@ -120,34 +121,18 @@ export default async function ManageEmployeesPage() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex items-center gap-2">
-                                                <code className="text-sm text-gray-300 bg-gray-900 px-3 py-1 rounded border border-gray-700">
-                                                    ••••••••
-                                                </code>
-                                                <span className="text-xs text-gray-500">(hashed)</span>
-                                            </div>
+                                            <code className="text-sm text-gray-300 bg-gray-900 px-3 py-1 rounded border border-gray-700">
+                                                {employee.password}
+                                            </code>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                                             {new Date(employee.createdAt).toLocaleDateString()}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                            <form action={deleteEmployee}>
-                                                <input type="hidden" name="employeeId" value={employee.id} />
-                                                <button
-                                                    type="submit"
-                                                    className="inline-flex items-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                                                    onClick={(e) => {
-                                                        if (!confirm(`Are you sure you want to delete ${employee.username}? This action cannot be undone.`)) {
-                                                            e.preventDefault();
-                                                        }
-                                                    }}
-                                                >
-                                                    <svg className="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                    </svg>
-                                                    Remove
-                                                </button>
-                                            </form>
+                                            <DeleteEmployeeButton 
+                                                employeeId={employee.id}
+                                                username={employee.username}
+                                            />
                                         </td>
                                     </tr>
                                 ))}

@@ -189,14 +189,16 @@ export async function createAccount(formData: FormData) {
     }
 
     const accountName = formData.get("accountName") as string;
-    const loginDetails = formData.get("loginDetails") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
     const browserType = formData.get("browserType") as string;
 
     try {
         await prisma.workAccount.create({
             data: {
                 accountName,
-                loginDetails,
+                email,
+                password,
                 browserType,
                 status: "Assigned",
                 employeeId: null,
@@ -208,6 +210,38 @@ export async function createAccount(formData: FormData) {
     } catch (error) {
         console.error("Failed to create account:", error);
         return { success: false, error: "Failed to create account" };
+    }
+}
+
+export async function editAccount(formData: FormData) {
+    const session = await getServerSession(authOptions);
+    // @ts-ignore
+    if (session?.user?.role !== "MANAGER") {
+        throw new Error("Unauthorized");
+    }
+
+    const accountId = formData.get("accountId") as string;
+    const accountName = formData.get("accountName") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const browserType = formData.get("browserType") as string;
+
+    try {
+        await prisma.workAccount.update({
+            where: { id: accountId },
+            data: {
+                accountName,
+                email,
+                password,
+                browserType,
+            },
+        });
+        revalidatePath("/manager/dashboard");
+        revalidatePath("/manager/accounts");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to edit account:", error);
+        return { success: false, error: "Failed to edit account" };
     }
 }
 
@@ -265,7 +299,8 @@ export async function reassignAccount(formData: FormData) {
             await prisma.workAccount.create({
                 data: {
                     accountName: existingAccount.accountName,
-                    loginDetails: existingAccount.loginDetails,
+                    email: existingAccount.email,
+                    password: existingAccount.password,
                     browserType: existingAccount.browserType,
                     status: "Assigned",
                     employeeId: employeeId || null,
@@ -648,12 +683,10 @@ export async function createEmployee(formData: FormData) {
     const password = formData.get("password") as string;
 
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        
         await prisma.user.create({
             data: {
                 username,
-                password: hashedPassword,
+                password: password,
                 role: "EMPLOYEE",
             },
         });

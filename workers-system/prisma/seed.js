@@ -39,7 +39,8 @@ async function main() {
     await prisma.workAccount.create({
         data: {
             accountName: 'brownhandshake',
-            loginDetails: 'user:pass',
+            email: 'brown@example.com',
+            password: 'password123',
             browserType: 'IX Browser',
             status: 'Assigned',
             employeeId: charles.id,
@@ -50,7 +51,8 @@ async function main() {
     await prisma.workAccount.create({
         data: {
             accountName: 'TestAccount123',
-            loginDetails: 'user:pass',
+            email: 'test@example.com',
+            password: 'password123',
             browserType: 'GoLogin',
             status: 'Paused',
             employeeId: testuser.id,

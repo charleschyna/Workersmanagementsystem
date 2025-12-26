@@ -1,12 +1,14 @@
 "use client";
 
-import { reassignAccount, deleteAccount } from "@/app/actions";
+import { reassignAccount, deleteAccount, editAccount } from "@/app/actions";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type Account = {
     id: string;
     accountName: string;
-    loginDetails: string;
+    email: string;
+    password: string;
     browserType: string;
     status: string;
     employeeId: string | null;
@@ -20,6 +22,13 @@ type Employee = {
 
 export default function AccountRow({ account, employees }: { account: Account; employees: Employee[] }) {
     const router = useRouter();
+    const [isEditing, setIsEditing] = useState(false);
+    const [editData, setEditData] = useState({
+        accountName: account.accountName,
+        email: account.email,
+        password: account.password,
+        browserType: account.browserType,
+    });
 
     const getStatusBadge = (status: string, hasEmployee: boolean) => {
         if (!hasEmployee) {
@@ -52,14 +61,125 @@ export default function AccountRow({ account, employees }: { account: Account; e
         router.refresh();
     }
 
+    async function handleEdit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append("accountId", account.id);
+        formData.append("accountName", editData.accountName);
+        formData.append("email", editData.email);
+        formData.append("password", editData.password);
+        formData.append("browserType", editData.browserType);
+        
+        await editAccount(formData);
+        setIsEditing(false);
+        router.refresh();
+    }
+
+    function cancelEdit() {
+        setEditData({
+            accountName: account.accountName,
+            email: account.email,
+            password: account.password,
+            browserType: account.browserType,
+        });
+        setIsEditing(false);
+    }
+
+    if (isEditing) {
+        return (
+            <tr className="bg-gray-750">
+                <td className="px-6 py-4">
+                    <input
+                        type="text"
+                        value={editData.accountName}
+                        onChange={(e) => setEditData({ ...editData, accountName: e.target.value })}
+                        className="w-full rounded border-gray-600 bg-gray-700 text-white text-sm px-2 py-1 focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Account Name"
+                    />
+                </td>
+                <td className="px-6 py-4">
+                    <input
+                        type="email"
+                        value={editData.email}
+                        onChange={(e) => setEditData({ ...editData, email: e.target.value })}
+                        className="w-full rounded border-gray-600 bg-gray-700 text-white text-sm px-2 py-1 focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Email"
+                    />
+                </td>
+                <td className="px-6 py-4">
+                    <input
+                        type="text"
+                        value={editData.password}
+                        onChange={(e) => setEditData({ ...editData, password: e.target.value })}
+                        className="w-full rounded border-gray-600 bg-gray-700 text-white text-sm px-2 py-1 focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Password"
+                    />
+                </td>
+                <td className="px-6 py-4">
+                    <select
+                        value={editData.browserType}
+                        onChange={(e) => setEditData({ ...editData, browserType: e.target.value })}
+                        className="w-full rounded border-gray-600 bg-gray-700 text-white text-sm px-2 py-1 focus:border-blue-500 focus:ring-blue-500"
+                    >
+                        <option value="IX Browser">IX Browser</option>
+                        <option value="GoLogin">GoLogin</option>
+                        <option value="AdsPower">AdsPower</option>
+                        <option value="Dolphin Anty">Dolphin Anty</option>
+                        <option value="Incogniton">Incogniton</option>
+                        <option value="Chrome">Chrome</option>
+                        <option value="Firefox">Firefox</option>
+                    </select>
+                </td>
+                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-300">
+                    {account.employee ? (
+                        <span className="font-medium text-blue-400">{account.employee.username}</span>
+                    ) : (
+                        <span className="text-gray-500 italic">Unassigned</span>
+                    )}
+                </td>
+                <td className="whitespace-nowrap px-6 py-4 text-sm">
+                    {getStatusBadge(account.status, !!account.employee)}
+                </td>
+                <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
+                    <form onSubmit={handleEdit} className="flex items-center gap-2">
+                        <button
+                            type="submit"
+                            className="text-green-400 hover:text-green-300"
+                            title="Save changes"
+                        >
+                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={cancelEdit}
+                            className="text-gray-400 hover:text-gray-300"
+                            title="Cancel"
+                        >
+                            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        );
+    }
+
     return (
         <tr>
             <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-white">
                 {account.accountName}
             </td>
             <td className="px-6 py-4 text-sm text-gray-300">
-                <div className="max-w-xs truncate" title={account.loginDetails}>
-                    {account.loginDetails}
+                <div className="max-w-xs truncate" title={account.email}>
+                    {account.email}
+                </div>
+            </td>
+            <td className="px-6 py-4 text-sm text-gray-300">
+                <div className="max-w-xs truncate" title={account.password}>
+                    {account.password}
                 </div>
             </td>
             <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-300">
@@ -77,6 +197,17 @@ export default function AccountRow({ account, employees }: { account: Account; e
             </td>
             <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
                 <div className="flex items-center gap-2">
+                    {/* Edit */}
+                    <button
+                        onClick={() => setIsEditing(true)}
+                        className="text-blue-400 hover:text-blue-300"
+                        title="Edit account"
+                    >
+                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                    </button>
+
                     {/* Reassign */}
                     <form action={handleReassign} className="inline">
                         <input type="hidden" name="accountId" value={account.id} />

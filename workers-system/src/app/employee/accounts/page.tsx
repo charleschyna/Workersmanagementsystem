@@ -60,8 +60,10 @@ export default async function EmployeeAccountsPage() {
                             </div>
 
                             <div className="mb-4 p-3 bg-gray-900 rounded border border-gray-700">
-                                <p className="text-xs text-gray-400 mb-1">Login Details:</p>
-                                <p className="text-sm text-gray-300 font-mono break-all">{account.loginDetails}</p>
+                                <p className="text-xs text-gray-400 mb-2">Email:</p>
+                                <p className="text-sm text-gray-300 font-mono break-all mb-3">{account.email}</p>
+                                <p className="text-xs text-gray-400 mb-2">Password:</p>
+                                <p className="text-sm text-gray-300 font-mono break-all">{account.password}</p>
                             </div>
 
                             <div className="text-xs text-gray-500 mb-4">

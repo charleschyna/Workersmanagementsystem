@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import LogoutButton from "@/components/LogoutButton";
+import InactivityLogout from "@/components/InactivityLogout";
 
 export default async function ManagerLayout({
     children,
@@ -22,6 +23,7 @@ export default async function ManagerLayout({
 
     return (
         <div className="min-h-screen bg-gray-900 text-gray-100">
+            <InactivityLogout timeoutMinutes={5} />
             <nav className="bg-gray-800 border-b border-gray-700">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 justify-between items-center">

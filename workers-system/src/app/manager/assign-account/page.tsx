@@ -79,8 +79,12 @@ export default async function AssignAccountPage() {
                                                 <div class="bg-gray-900 p-4 rounded border border-gray-700">
                                                     <div class="grid grid-cols-2 gap-3">
                                                         <div>
-                                                            <span class="text-xs text-gray-500">Login Details:</span>
-                                                            <p class="text-sm text-white">${selected.loginDetails}</p>
+                                                            <span class="text-xs text-gray-500">Email:</span>
+                                                            <p class="text-sm text-white">${selected.email}</p>
+                                                        </div>
+                                                        <div>
+                                                            <span class="text-xs text-gray-500">Password:</span>
+                                                            <p class="text-sm text-white">${selected.password}</p>
                                                         </div>
                                                         <div>
                                                             <span class="text-xs text-gray-500">Browser:</span>

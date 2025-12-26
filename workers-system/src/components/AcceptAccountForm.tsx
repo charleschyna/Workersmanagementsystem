@@ -7,7 +7,8 @@ import { useRouter } from "next/navigation";
 type Account = {
     id: string;
     accountName: string;
-    loginDetails: string;
+    email: string;
+    password: string;
     browserType: string;
 };
 
@@ -61,7 +62,8 @@ export default function AcceptAccountForm({ account }: { account: Account }) {
                                 <input type="hidden" name="accountId" value={account.id} />
                                 
                                 <div className="bg-gray-900 p-4 rounded border border-gray-700 mb-4">
-                                    <p className="text-sm text-gray-300 mb-2"><strong>Login:</strong> {account.loginDetails}</p>
+                                    <p className="text-sm text-gray-300 mb-2"><strong>Email:</strong> {account.email}</p>
+                                    <p className="text-sm text-gray-300 mb-2"><strong>Password:</strong> {account.password}</p>
                                     <p className="text-sm text-gray-300"><strong>Browser:</strong> {account.browserType}</p>
                                 </div>
 
