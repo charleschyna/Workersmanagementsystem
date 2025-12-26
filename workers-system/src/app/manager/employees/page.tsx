@@ -17,18 +17,6 @@ export default async function ManageEmployeesPage() {
         orderBy: { createdAt: "desc" },
     });
 
-    async function createEmployeeAction(formData: FormData) {
-        "use server";
-        await createEmployee(formData);
-        redirect("/manager/employees");
-    }
-
-    async function deleteEmployeeAction(formData: FormData) {
-        "use server";
-        await deleteEmployee(formData);
-        redirect("/manager/employees");
-    }
-
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -45,7 +33,7 @@ export default async function ManageEmployeesPage() {
             {/* Create New Employee Form */}
             <div className="bg-gray-800 rounded-lg shadow-lg border border-gray-700 p-6">
                 <h3 className="text-lg font-bold text-white mb-4">Add New Employee</h3>
-                <form action={createEmployeeAction} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <form action={createEmployee} className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label htmlFor="username" className="block text-xs font-medium text-gray-300 mb-1">
                             Username *
@@ -143,7 +131,7 @@ export default async function ManageEmployeesPage() {
                                             {new Date(employee.createdAt).toLocaleDateString()}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                            <form action={deleteEmployeeAction}>
+                                            <form action={deleteEmployee}>
                                                 <input type="hidden" name="employeeId" value={employee.id} />
                                                 <button
                                                     type="submit"
