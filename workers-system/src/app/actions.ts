@@ -149,12 +149,6 @@ export async function markAccountAsPaid(formData: FormData) {
     revalidatePath("/manager/payroll");
     return { success: true };
 }
-        data: { isPaid: true },
-    });
-
-    revalidatePath("/manager/payroll");
-    return { success: true };
-}
 
 
 export async function addEmployee(formData: FormData) {
