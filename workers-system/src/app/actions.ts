@@ -603,3 +603,62 @@ export async function updateManagerCredentials(formData: FormData) {
         return { success: false, error: "Failed to update credentials" };
     }
 }
+
+export async function deleteEmployee(formData: FormData) {
+    const session = await getServerSession(authOptions);
+    // @ts-ignore
+    if (session?.user?.role !== "MANAGER") {
+        throw new Error("Unauthorized");
+    }
+
+    const employeeId = formData.get("employeeId") as string;
+
+    try {
+        // Delete all related records first
+        await prisma.taskClaim.deleteMany({
+            where: { employeeId },
+        });
+
+        await prisma.workAccount.deleteMany({
+            where: { employeeId },
+        });
+
+        // Then delete the employee
+        await prisma.user.delete({
+            where: { id: employeeId },
+        });
+
+        revalidatePath("/manager/employees");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to delete employee:", error);
+        return { success: false, error: "Failed to delete employee" };
+    }
+}
+
+export async function createEmployee(formData: FormData) {
+    const session = await getServerSession(authOptions);
+    // @ts-ignore
+    if (session?.user?.role !== "MANAGER") {
+        throw new Error("Unauthorized");
+    }
+
+    const username = formData.get("username") as string;
+    const password = formData.get("password") as string;
+
+    try {
+        await prisma.user.create({
+            data: {
+                username,
+                password,
+                role: "EMPLOYEE",
+            },
+        });
+
+        revalidatePath("/manager/employees");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to create employee:", error);
+        return { success: false, error: "Failed to create employee" };
+    }
+}
