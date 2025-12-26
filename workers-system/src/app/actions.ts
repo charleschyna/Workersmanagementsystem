@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import bcrypt from "bcryptjs";
 
 export async function submitClaim(formData: FormData) {
     const session = await getServerSession(authOptions);
@@ -647,10 +648,12 @@ export async function createEmployee(formData: FormData) {
     const password = formData.get("password") as string;
 
     try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
         await prisma.user.create({
             data: {
                 username,
-                password,
+                password: hashedPassword,
                 role: "EMPLOYEE",
             },
         });
