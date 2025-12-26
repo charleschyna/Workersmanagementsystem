@@ -55,6 +55,17 @@ model WorkAccount {
   status           AccountStatus @default(Assigned)
   recentlyUnpaused Boolean  @default(false)
   assignedAt       DateTime @default(now())
+  
+  initialEarnings       Decimal?
+  initialEarningsProof  String?
+  initialEarningsDate   DateTime?
+  
+  finalEarnings         Decimal?
+  finalEarningsProof    String?
+  finalEarningsDate     DateTime?
+  
+  isPaid                Boolean  @default(false)
+  paidAt                DateTime?
 }
 
 enum AccountStatus {

@@ -1,52 +1,52 @@
 "use client";
 
-import { acceptAccount, pauseAccount, leaveAccount } from "@/app/actions";
+import { pauseAccount } from "@/app/actions";
 import { useState } from "react";
+import AcceptAccountForm from "./AcceptAccountForm";
+import LeaveAccountForm from "./LeaveAccountForm";
 
 type Account = {
     id: string;
     status: string;
+    accountName: string;
+    loginDetails: string;
+    browserType: string;
+    initialEarnings: any;
 };
 
 export default function AccountActionButtons({ account }: { account: Account }) {
     const [loading, setLoading] = useState(false);
 
-    async function handleAction(action: (id: string) => Promise<any>) {
+    async function handlePause() {
         if (loading) return;
         setLoading(true);
-        await action(account.id);
+        await pauseAccount(account.id);
         setLoading(false);
     }
 
+    const accountData = {
+        id: account.id,
+        accountName: account.accountName,
+        loginDetails: account.loginDetails,
+        browserType: account.browserType,
+        initialEarnings: account.initialEarnings?.toString() || null
+    };
+
     if (account.status === "Assigned") {
-        return (
-            <button
-                onClick={() => handleAction(acceptAccount)}
-                disabled={loading}
-                className="w-full rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50"
-            >
-                {loading ? "Processing..." : "Accept Account"}
-            </button>
-        );
+        return <AcceptAccountForm account={accountData} />;
     }
 
     if (account.status === "Accepted") {
         return (
             <div className="flex gap-2">
                 <button
-                    onClick={() => handleAction(pauseAccount)}
+                    onClick={handlePause}
                     disabled={loading}
-                    className="flex-1 rounded-md bg-yellow-600 px-4 py-2 text-sm font-medium text-white hover:bg-yellow-700 disabled:opacity-50"
+                    className="rounded bg-yellow-600 px-3 py-1 text-xs font-medium text-white hover:bg-yellow-700 disabled:opacity-50"
                 >
-                    {loading ? "Processing..." : "Pause"}
+                    {loading ? "..." : "Pause"}
                 </button>
-                <button
-                    onClick={() => handleAction(leaveAccount)}
-                    disabled={loading}
-                    className="flex-1 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
-                >
-                    {loading ? "Processing..." : "Leave"}
-                </button>
+                <LeaveAccountForm account={accountData} />
             </div>
         );
     }
@@ -54,27 +54,15 @@ export default function AccountActionButtons({ account }: { account: Account }) 
     if (account.status === "Paused") {
         return (
             <div className="flex gap-2">
-                <button
-                    onClick={() => handleAction(acceptAccount)}
-                    disabled={loading}
-                    className="flex-1 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50"
-                >
-                    {loading ? "Processing..." : "Resume"}
-                </button>
-                <button
-                    onClick={() => handleAction(leaveAccount)}
-                    disabled={loading}
-                    className="flex-1 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
-                >
-                    {loading ? "Processing..." : "Leave"}
-                </button>
+                <AcceptAccountForm account={accountData} />
+                <LeaveAccountForm account={accountData} />
             </div>
         );
     }
 
     return (
-        <div className="text-sm text-gray-500 text-center py-2">
-            Account has been left
+        <div className="text-xs text-gray-500">
+            Left
         </div>
     );
 }

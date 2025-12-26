@@ -125,6 +125,37 @@ export async function markAsPaid(formData: FormData) {
     return { success: true };
 }
 
+export async function markAccountAsPaid(formData: FormData) {
+    const session = await getServerSession(authOptions);
+    // @ts-ignore
+    if (session?.user?.role !== "MANAGER") {
+        throw new Error("Unauthorized");
+    }
+
+    const employeeId = formData.get("employeeId") as string;
+
+    await prisma.workAccount.updateMany({
+        where: {
+            employeeId: employeeId,
+            status: "Left",
+            isPaid: false,
+        },
+        data: { 
+            isPaid: true,
+            paidAt: new Date()
+        },
+    });
+
+    revalidatePath("/manager/payroll");
+    return { success: true };
+}
+        data: { isPaid: true },
+    });
+
+    revalidatePath("/manager/payroll");
+    return { success: true };
+}
+
 
 export async function addEmployee(formData: FormData) {
     const session = await getServerSession(authOptions);
@@ -284,6 +315,132 @@ export async function unassignAllAccounts() {
     } catch (error) {
         console.error("Failed to unassign all accounts:", error);
         return { success: false, error: "Failed to unassign all accounts" };
+    }
+}
+
+export async function acceptAccountWithEarnings(formData: FormData) {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+        return { success: false, error: "Unauthorized" };
+    }
+
+    const user = await prisma.user.findUnique({
+        where: { username: session.user.name || "" },
+    });
+
+    if (!user) {
+        return { success: false, error: "User not found" };
+    }
+
+    const accountId = formData.get("accountId") as string;
+    const initialEarnings = parseFloat(formData.get("initialEarnings") as string);
+    const proofFile = formData.get("initialEarningsProof") as File;
+    
+    let proofPath = "";
+    if (proofFile && proofFile.size > 0) {
+        try {
+            const bytes = await proofFile.arrayBuffer();
+            const buffer = Buffer.from(bytes);
+            const base64 = buffer.toString('base64');
+            proofPath = `data:${proofFile.type};base64,${base64}`;
+        } catch (error) {
+            return { success: false, error: "Failed to process screenshot" };
+        }
+    }
+
+    try {
+        const account = await prisma.workAccount.findFirst({
+            where: { id: accountId, employeeId: user.id },
+        });
+
+        if (!account) {
+            return { success: false, error: "Account not found" };
+        }
+
+        const updateData: any = { 
+            status: "Accepted",
+            initialEarnings,
+            initialEarningsProof: proofPath,
+            initialEarningsDate: new Date()
+        };
+        
+        if (account.status === "Paused") {
+            updateData.recentlyUnpaused = true;
+        }
+
+        await prisma.workAccount.update({
+            where: { id: accountId },
+            data: updateData,
+        });
+
+        revalidatePath("/employee/accounts");
+        revalidatePath("/manager/dashboard");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to accept account:", error);
+        return { success: false, error: "Failed to accept account" };
+    }
+}
+
+export async function leaveAccountWithEarnings(formData: FormData) {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+        return { success: false, error: "Unauthorized" };
+    }
+
+    const user = await prisma.user.findUnique({
+        where: { username: session.user.name || "" },
+    });
+
+    if (!user) {
+        return { success: false, error: "User not found" };
+    }
+
+    const accountId = formData.get("accountId") as string;
+    const finalEarnings = parseFloat(formData.get("finalEarnings") as string);
+    const proofFile = formData.get("finalEarningsProof") as File;
+    
+    let proofPath = "";
+    if (proofFile && proofFile.size > 0) {
+        try {
+            const bytes = await proofFile.arrayBuffer();
+            const buffer = Buffer.from(bytes);
+            const base64 = buffer.toString('base64');
+            proofPath = `data:${proofFile.type};base64,${base64}`;
+        } catch (error) {
+            return { success: false, error: "Failed to process screenshot" };
+        }
+    }
+
+    try {
+        const account = await prisma.workAccount.findFirst({
+            where: { id: accountId, employeeId: user.id },
+        });
+
+        if (!account) {
+            return { success: false, error: "Account not found" };
+        }
+
+        const initialEarnings = account.initialEarnings ? parseFloat(account.initialEarnings.toString()) : 0;
+        const earnedAmount = finalEarnings - initialEarnings;
+
+        await prisma.workAccount.update({
+            where: { id: accountId },
+            data: { 
+                status: "Left",
+                finalEarnings,
+                finalEarningsProof: proofPath,
+                finalEarningsDate: new Date()
+            },
+        });
+
+        revalidatePath("/employee/accounts");
+        revalidatePath("/manager/dashboard");
+        revalidatePath("/manager/payroll");
+        return { success: true, earnings: earnedAmount.toFixed(2) };
+    } catch (error) {
+        console.error("Failed to leave account:", error);
+        return { success: false, error: "Failed to leave account" };
     }
 }
 
