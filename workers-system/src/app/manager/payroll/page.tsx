@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { markAccountAsPaid } from "@/app/actions";
 import Link from "next/link";
+import EarningsProofViewer from "@/components/EarningsProofViewer";
 
 export default async function PayrollPage() {
     const session = await getServerSession(authOptions);
@@ -136,12 +137,12 @@ export default async function PayrollPage() {
                                                     <p className="text-xs text-gray-400">{account.finalEarningsDate ? new Date(account.finalEarningsDate).toLocaleString() : 'N/A'}</p>
                                                 </div>
                                             </div>
-                                            {account.finalEarningsProof && (
-                                                <div className="mt-3">
-                                                    <p className="text-xs text-gray-500 mb-2">Final Earnings Proof:</p>
-                                                    <img src={account.finalEarningsProof} alt="Earnings proof" className="max-w-sm rounded border border-gray-600" />
-                                                </div>
-                                            )}
+                                            
+                                            <EarningsProofViewer 
+                                                initialProof={account.initialEarningsProof}
+                                                finalProof={account.finalEarningsProof}
+                                                accountName={account.accountName}
+                                            />
                                         </div>
                                     ))}
                                 </div>
