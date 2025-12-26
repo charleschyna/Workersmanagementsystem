@@ -74,8 +74,6 @@ export default async function PayrollPage() {
                     <strong>Payment Schedule:</strong> Payments are processed every Wednesday. This page shows all pending payroll records for review. Payments are calculated based on account earnings difference (Final Earnings - Initial Earnings).
                 </p>
             </div>
-                </p>
-            </div>
 
             {Object.keys(payrollSummary).length === 0 ? (
                 <div className="bg-gray-800 rounded-lg shadow-lg border border-gray-700 p-12 text-center">
