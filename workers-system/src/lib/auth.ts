@@ -25,7 +25,7 @@ export const authOptions: NextAuthOptions = {
                 }
 
                 // Support both hashed and plain text passwords for backward compatibility
-                const isPasswordValid = user.password.startsWith('$2') 
+                const isPasswordValid = user.password.startsWith('$2a$') || user.password.startsWith('$2b$')
                     ? await bcrypt.compare(credentials.password, user.password)
                     : user.password === credentials.password;
 

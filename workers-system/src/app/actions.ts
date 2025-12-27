@@ -285,39 +285,13 @@ export async function reassignAccount(formData: FormData) {
     const employeeId = formData.get("employeeId") as string;
 
     try {
-        // Get the existing account
-        const existingAccount = await prisma.workAccount.findUnique({
-            where: { id: accountId }
+        await prisma.workAccount.update({
+            where: { id: accountId },
+            data: {
+                status: "Assigned",
+                employeeId: employeeId || null,
+            },
         });
-
-        if (!existingAccount) {
-            return { success: false, error: "Account not found" };
-        }
-
-        // If the account has already been worked on (has finalEarnings), create a new record
-        // to preserve the previous work session history
-        if (existingAccount.finalEarnings !== null) {
-            // Create new account record with the same details
-            await prisma.workAccount.create({
-                data: {
-                    accountName: existingAccount.accountName,
-                    email: existingAccount.email,
-                    password: existingAccount.password,
-                    browserType: existingAccount.browserType,
-                    status: "Assigned",
-                    employeeId: employeeId || null,
-                }
-            });
-        } else {
-            // If account hasn't been worked on yet, just update it normally
-            await prisma.workAccount.update({
-                where: { id: accountId },
-                data: {
-                    status: employeeId ? "Assigned" : "Assigned",
-                    employeeId: employeeId || null,
-                },
-            });
-        }
         
         revalidatePath("/manager/dashboard");
         revalidatePath("/manager/accounts");
@@ -373,6 +347,32 @@ export async function unassignAllAccounts() {
     } catch (error) {
         console.error("Failed to unassign all accounts:", error);
         return { success: false, error: "Failed to unassign all accounts" };
+    }
+}
+
+export async function unassignAccount(formData: FormData) {
+    const session = await getServerSession(authOptions);
+    // @ts-ignore
+    if (session?.user?.role !== "MANAGER") {
+        throw new Error("Unauthorized");
+    }
+
+    const accountId = formData.get("accountId") as string;
+
+    try {
+        await prisma.workAccount.update({
+            where: { id: accountId },
+            data: {
+                employeeId: null,
+                status: "Assigned"
+            },
+        });
+        revalidatePath("/manager/dashboard");
+        revalidatePath("/manager/accounts");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to unassign account:", error);
+        return { success: false, error: "Failed to unassign account" };
     }
 }
 
@@ -486,6 +486,7 @@ export async function leaveAccountWithEarnings(formData: FormData) {
             where: { id: accountId },
             data: { 
                 status: "Left",
+                employeeId: null,
                 finalEarnings,
                 finalEarningsProof: proofPath,
                 finalEarningsDate: new Date()
