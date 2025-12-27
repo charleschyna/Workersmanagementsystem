@@ -23,6 +23,7 @@ type Employee = {
 export default function AccountRow({ account, employees }: { account: Account; employees: Employee[] }) {
     const router = useRouter();
     const [isEditing, setIsEditing] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [editData, setEditData] = useState({
         accountName: account.accountName,
         email: account.email,
@@ -49,7 +50,9 @@ export default function AccountRow({ account, employees }: { account: Account; e
     };
 
     async function handleReassign(formData: FormData) {
+        setIsLoading(true);
         await reassignAccount(formData);
+        setIsLoading(false);
         router.refresh();
     }
 
@@ -217,8 +220,9 @@ export default function AccountRow({ account, employees }: { account: Account; e
                         <input type="hidden" name="accountId" value={account.id} />
                         <select
                             name="employeeId"
-                            className="rounded border-gray-600 bg-gray-700 text-white text-xs px-2 py-1 focus:border-blue-500 focus:ring-blue-500"
-                            defaultValue={account.employeeId || ""}
+                            className="rounded border-gray-600 bg-gray-700 text-white text-xs px-2 py-1 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50"
+                            value={account.employeeId || ""}
+                            disabled={isLoading}
                             onChange={(e) => (e.target.form as HTMLFormElement).requestSubmit()}
                         >
                             <option value="">Unassign</option>
