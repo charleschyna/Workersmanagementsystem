@@ -1,6 +1,6 @@
 "use client";
 
-import { reassignAccount, deleteAccount, editAccount } from "@/app/actions";
+import { reassignAccount, deleteAccount, editAccount, unassignAccount } from "@/app/actions";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -58,6 +58,14 @@ export default function AccountRow({ account, employees }: { account: Account; e
             return;
         }
         await deleteAccount(formData);
+        router.refresh();
+    }
+
+    async function handleUnassign(formData: FormData) {
+        if (!confirm(`Unassign "${account.accountName}" from ${account.employee?.username}?`)) {
+            return;
+        }
+        await unassignAccount(formData);
         router.refresh();
     }
 
@@ -221,6 +229,22 @@ export default function AccountRow({ account, employees }: { account: Account; e
                             ))}
                         </select>
                     </form>
+
+                    {/* Unassign Button */}
+                    {account.employeeId && (
+                        <form action={handleUnassign} className="inline">
+                            <input type="hidden" name="accountId" value={account.id} />
+                            <button
+                                type="submit"
+                                className="text-yellow-400 hover:text-yellow-300"
+                                title="Unassign from employee"
+                            >
+                                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6" />
+                                </svg>
+                            </button>
+                        </form>
+                    )}
 
                     {/* Delete */}
                     <form action={handleDelete} className="inline">

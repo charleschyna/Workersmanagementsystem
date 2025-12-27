@@ -376,6 +376,32 @@ export async function unassignAllAccounts() {
     }
 }
 
+export async function unassignAccount(formData: FormData) {
+    const session = await getServerSession(authOptions);
+    // @ts-ignore
+    if (session?.user?.role !== "MANAGER") {
+        throw new Error("Unauthorized");
+    }
+
+    const accountId = formData.get("accountId") as string;
+
+    try {
+        await prisma.workAccount.update({
+            where: { id: accountId },
+            data: {
+                employeeId: null,
+                status: "Assigned"
+            },
+        });
+        revalidatePath("/manager/dashboard");
+        revalidatePath("/manager/accounts");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to unassign account:", error);
+        return { success: false, error: "Failed to unassign account" };
+    }
+}
+
 export async function acceptAccountWithEarnings(formData: FormData) {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
@@ -486,6 +512,7 @@ export async function leaveAccountWithEarnings(formData: FormData) {
             where: { id: accountId },
             data: { 
                 status: "Left",
+                employeeId: null,
                 finalEarnings,
                 finalEarningsProof: proofPath,
                 finalEarningsDate: new Date()
