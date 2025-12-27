@@ -16,7 +16,9 @@ export async function submitClaim(formData: FormData) {
     const platform = formData.get("platform") as string;
     const accountName = formData.get("accountName") as string;
     const taskExternalId = formData.get("taskExternalId") as string;
-    const timeSpentHours = parseFloat(formData.get("timeSpentHours") as string);
+    const hours = parseInt(formData.get("timeSpentHours") as string) || 0;
+    const minutes = parseInt(formData.get("timeSpentMinutes") as string) || 0;
+    const timeSpentHours = hours + (minutes / 60);
     const screenshotFile = formData.get("screenshot") as File;
     
     let screenshotPath = "no-screenshot.png";

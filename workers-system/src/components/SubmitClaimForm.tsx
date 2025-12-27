@@ -105,18 +105,41 @@ export default function SubmitClaimForm({ accounts }: { accounts: Account[] }) {
                     </div>
 
                     <div>
-                        <label htmlFor="timeSpentHours" className="block text-sm font-medium text-gray-300 mb-2">
-                            Time Spent (Hours)
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Time Spent
                         </label>
-                        <input
-                            type="number"
-                            name="timeSpentHours"
-                            id="timeSpentHours"
-                            step="0.01"
-                            min="0"
-                            required
-                            className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
-                        />
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label htmlFor="timeSpentHours" className="block text-xs text-gray-400 mb-1">
+                                    Hours
+                                </label>
+                                <input
+                                    type="number"
+                                    name="timeSpentHours"
+                                    id="timeSpentHours"
+                                    min="0"
+                                    defaultValue="0"
+                                    required
+                                    className="block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="timeSpentMinutes" className="block text-xs text-gray-400 mb-1">
+                                    Minutes
+                                </label>
+                                <input
+                                    type="number"
+                                    name="timeSpentMinutes"
+                                    id="timeSpentMinutes"
+                                    min="0"
+                                    max="59"
+                                    defaultValue="0"
+                                    required
+                                    className="block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
+                                />
+                            </div>
+                        </div>
+                        <p className="mt-1 text-xs text-gray-500">Enter 0 hours and 30 minutes for a 30-minute task</p>
                     </div>
 
                     <div>
