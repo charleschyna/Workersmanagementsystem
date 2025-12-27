@@ -4,41 +4,30 @@ import Link from "next/link";
 import HistoryDropdown from "@/components/HistoryDropdown";
 
 export default async function ManagerDashboardPage() {
-    // Fetch all data in parallel
-    const [pendingClaims, allEmployees, allAccounts, pausedAccounts, leftAccounts] = await Promise.all([
-        prisma.taskClaim.findMany({
-            where: { status: "Pending" },
-            include: { employee: true },
-            orderBy: { submittedAt: "desc" },
-        }),
-        prisma.user.findMany({
-            where: { role: "EMPLOYEE" },
-            orderBy: { username: "asc" },
-        }),
-        prisma.workAccount.findMany({
-            where: {
-                employeeId: { not: null }
-            },
-            include: { employee: true },
-            orderBy: { assignedAt: "desc" },
-        }),
-        prisma.workAccount.findMany({
-            where: { 
-                status: "Paused",
-                employeeId: { not: null }
-            },
-            include: { employee: true },
-            orderBy: { assignedAt: "desc" },
-        }),
-        prisma.workAccount.findMany({
-            where: { 
-                status: "Left",
-                employeeId: { not: null }
-            },
-            include: { employee: true },
-            orderBy: { assignedAt: "desc" },
-        }),
-    ]);
+    // Fetch data sequentially to avoid connection pool exhaustion
+    const pendingClaims = await prisma.taskClaim.findMany({
+        where: { status: "Pending" },
+        include: { employee: true },
+        orderBy: { submittedAt: "desc" },
+    });
+
+    const allEmployees = await prisma.user.findMany({
+        where: { role: "EMPLOYEE" },
+        orderBy: { username: "asc" },
+    });
+
+    // Fetch all accounts once and filter in memory
+    const allAccounts = await prisma.workAccount.findMany({
+        where: {
+            employeeId: { not: null }
+        },
+        include: { employee: true },
+        orderBy: { assignedAt: "desc" },
+    });
+
+    // Filter accounts by status in memory
+    const pausedAccounts = allAccounts.filter(a => a.status === "Paused");
+    const leftAccounts = allAccounts.filter(a => a.status === "Left");
 
     // Group pending claims by employee
     const groupedClaims = pendingClaims.reduce((acc, claim) => {
